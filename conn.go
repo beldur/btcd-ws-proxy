@@ -24,6 +24,9 @@ type connection struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  64,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(req *http.Request) bool {
+		return true
+	},
 }
 
 // Write data to websocket connection
