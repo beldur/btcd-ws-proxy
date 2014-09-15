@@ -15,6 +15,7 @@ var address = flag.String("address", ":8080", "Websocket listen address")
 var rpcHost = flag.String("rpchost", "localhost:8334", "Hostname for RPC Server")
 var rpcUser = flag.String("rpcuser", "", "Username for RPC access")
 var rpcPass = flag.String("rpcpass", "", "Password for RPC access")
+var rpcCert = flag.String("rpccert", "", "Certificate for RPC access")
 
 func main() {
 	flag.Parse()
@@ -25,8 +26,15 @@ func main() {
 		},
 	}
 
-	btcdHomeDir := btcutil.AppDataDir("btcd", false)
-	certs, _ := ioutil.ReadFile(filepath.Join(btcdHomeDir, "rpc.cert"))
+    if *rpcCert != "" {
+        certFile := *rpcCert
+    } else {
+        btcdHomeDir := btcutil.AppDataDir("btcd", false)
+        filepath.Join(btcdHomeDir, "rpc.cert")
+        rpcCert = filepath.Join(btcdHomeDir, "rpc.cert")
+    }
+
+	certs, _ := ioutil.ReadFile(rpcCert)
 
 	connCfg := &btcrpcclient.ConnConfig{
 		Host:         *rpcHost,
